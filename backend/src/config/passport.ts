@@ -36,7 +36,7 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
         return done(null, savedUser);
       } catch (error) {
         console.error('Error in Google OAuth strategy:', error);
-        return done(error, null);
+        return done(error, false);
       }
     }
     )
@@ -54,7 +54,7 @@ passport.deserializeUser(async (id: string, done) => {
     const user = await User.findById(id);
     done(null, user);
   } catch (error) {
-    done(error, null);
+    done(error, false);
   }
 });
 

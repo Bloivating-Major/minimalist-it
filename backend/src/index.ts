@@ -5,14 +5,11 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import { connectDB } from './config/database.js';
 import todoRoutes from './routes/todoRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import './config/passport.js'; // Initialize passport configuration
-
-// Debug: Check if Google OAuth credentials are loaded
-console.log('Google Client ID loaded:', !!process.env.GOOGLE_CLIENT_ID);
-console.log('Google Client Secret loaded:', !!process.env.GOOGLE_CLIENT_SECRET);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -35,10 +32,14 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'your-secret-key',
   resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI!,
+    collectionName: 'sessions',
+  }),
   cookie: {
     secure: process.env.NODE_ENV === 'production',
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+  },
 }));
 
 app.use(express.json());

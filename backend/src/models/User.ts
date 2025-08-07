@@ -47,8 +47,4 @@ const UserSchema: Schema = new Schema(
   }
 );
 
-// Index for better query performance
-UserSchema.index({ email: 1 });
-UserSchema.index({ googleId: 1 });
-
 export default mongoose.model<IUser>('User', UserSchema);
