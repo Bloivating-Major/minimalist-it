@@ -18,7 +18,7 @@ export function LoginPage() {
               <CheckSquare className="h-8 w-8 text-background" />
             </div>
           </div>
-          <h1 className="text-3xl font-semibold text-foreground">TodoMaster</h1>
+          <h1 className="text-3xl font-semibold text-foreground">Minimal List It</h1>
           <p className="text-muted-foreground mt-2">Minimalist productivity</p>
         </div>
 
@@ -58,7 +58,7 @@ export function LoginPage() {
 
         {/* Features */}
         <div className="text-center space-y-4">
-          <h3 className="text-sm font-medium text-foreground">Why TodoMaster?</h3>
+          <h3 className="text-sm font-medium text-foreground">Why Minimal List It?</h3>
           <div className="grid grid-cols-1 gap-3 text-sm text-muted-foreground">
             <div className="flex items-center justify-center gap-2">
               <div className="h-1.5 w-1.5 bg-foreground rounded-full"></div>

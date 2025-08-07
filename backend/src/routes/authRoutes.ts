@@ -2,6 +2,8 @@ import express from 'express';
 import passport from '../config/passport';
 import { generateToken } from '../middleware/auth';
 import { IUser } from '../models/User';
+import jwt from 'jsonwebtoken';
+import User from '../models/User';
 
 const router = express.Router();
 
@@ -58,9 +60,7 @@ router.get('/me', async (req, res) => {
       return res.status(401).json({ error: 'No token provided' });
     }
 
-    const jwt = require('jsonwebtoken');
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
-    const User = require('../models/User').default;
     const user = await User.findById(decoded.userId);
     
     if (!user) {

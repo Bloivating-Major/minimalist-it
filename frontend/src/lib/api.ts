@@ -1,8 +1,14 @@
 import axios from 'axios';
 import type { Todo, CreateTodoData, UpdateTodoData } from '../types/todo';
 
-// Determine the correct API base URL based on current host
+// Get API base URL from environment variables with fallback logic
 const getApiBaseUrl = () => {
+  // First, try to use environment variable
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  // Fallback to dynamic detection for development
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
 
@@ -10,16 +16,16 @@ const getApiBaseUrl = () => {
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'http://localhost:5000/api';
     }
-    // Production - check for common deployment patterns
+    // Production fallback
     else if (hostname.includes('vercel.app') || hostname.includes('netlify.app')) {
-      // Frontend is deployed, use production backend
-      return 'https://todomaster-backend.onrender.com/api';  // Replace with your actual Render URL
+      return 'https://minimalist-it-backend.onrender.com/api';
     }
     // Local network (mobile testing)
     else {
       return `http://${hostname}:5000/api`;
     }
   }
+
   return 'http://localhost:5000/api';
 };
 
