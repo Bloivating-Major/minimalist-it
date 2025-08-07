@@ -1,16 +1,17 @@
+import dotenv from 'dotenv';
+
+// Load environment variables FIRST
+dotenv.config();
+
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
 import passport from 'passport';
-import dotenv from 'dotenv';
 import MongoStore from 'connect-mongo';
 import { connectDB } from './config/database.js';
 import todoRoutes from './routes/todoRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import './config/passport.js'; // Initialize passport configuration
-
-// Load environment variables
-dotenv.config();
 
 // Connect to database
 connectDB();

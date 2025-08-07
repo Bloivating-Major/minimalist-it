@@ -1,6 +1,10 @@
+import dotenv from 'dotenv';
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import User from '../models/User.js';
+
+// Ensure environment variables are loaded
+dotenv.config();
 
 // Only initialize if credentials are provided
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
@@ -42,7 +46,8 @@ if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
     )
   );
 } else {
-  console.warn('Google OAuth credentials not provided. Authentication will not work.');
+  console.warn('❌ Google OAuth credentials not provided. Authentication will not work.');
+  console.warn('Please set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in your .env file');
 }
 
 passport.serializeUser((user, done) => {
