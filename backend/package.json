@@ -12,8 +12,7 @@
     "dev": "nodemon src/index.ts",
     "build": "npm run build:ts || npm run build:fallback",
     "build:ts": "tsc --skipLibCheck --noEmitOnError false --allowJs --noImplicitAny false --strict false",
-    "build:fallback": "node build-fallback.js",
-
+    "build:fallback": "node build-fallback.cjs",
     "start": "node dist/index.js || npm run start:ts",
     "start:ts": "ts-node src/index.ts",
     "start:js": "node dist/index.js",
@@ -40,8 +39,8 @@
     "mongoose": "^8.17.0",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "typescript": "^5.0.0",
-    "ts-node": "^10.9.0"
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",
