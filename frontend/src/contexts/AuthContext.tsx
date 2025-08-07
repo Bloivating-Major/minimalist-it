@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { config } from '../config/env';
 
 interface User {
   id: string;
@@ -68,20 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const getApiUrl = () => {
-    // Use environment variable if available
-    if (import.meta.env.VITE_API_BASE_URL) {
-      return import.meta.env.VITE_API_BASE_URL;
-    }
-
-    // Fallback to dynamic detection
-    const hostname = window.location.hostname;
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'http://localhost:5000/api';
-    } else if (hostname.includes('vercel.app') || hostname.includes('netlify.app')) {
-      return 'https://minimalist-it-backend.onrender.com/api';
-    } else {
-      return `http://${hostname}:5000/api`;
-    }
+    return config.apiBaseUrl;
   };
 
   const fetchUser = async (authToken: string) => {

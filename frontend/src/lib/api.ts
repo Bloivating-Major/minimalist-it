@@ -1,35 +1,9 @@
 import axios from 'axios';
 import type { Todo, CreateTodoData, UpdateTodoData } from '../types/todo';
+import { config } from '../config/env';
 
-// Get API base URL from environment variables with fallback logic
-const getApiBaseUrl = () => {
-  // First, try to use environment variable
-  if (import.meta.env.VITE_API_BASE_URL) {
-    return import.meta.env.VITE_API_BASE_URL;
-  }
-
-  // Fallback to dynamic detection for development
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-
-    // Development
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-      return 'http://localhost:5000/api';
-    }
-    // Production fallback
-    else if (hostname.includes('vercel.app') || hostname.includes('netlify.app')) {
-      return 'https://minimalist-it-backend.onrender.com/api';
-    }
-    // Local network (mobile testing)
-    else {
-      return `http://${hostname}:5000/api`;
-    }
-  }
-
-  return 'http://localhost:5000/api';
-};
-
-const API_BASE_URL = getApiBaseUrl();
+// Use centralized configuration
+const API_BASE_URL = config.apiBaseUrl;
 
 const api = axios.create({
   baseURL: API_BASE_URL,
