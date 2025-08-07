@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import Todo, { ITodo } from '../models/Todo';
+import Todo, { ITodo } from '../models/Todo.js';
 
 // Get all todos for authenticated user
 export const getTodos = async (req: Request, res: Response): Promise<void> => {

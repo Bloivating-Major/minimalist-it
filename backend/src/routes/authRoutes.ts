@@ -1,9 +1,9 @@
 import express from 'express';
-import passport from '../config/passport';
-import { generateToken } from '../middleware/auth';
-import { IUser } from '../models/User';
+import passport from '../config/passport.js';
+import { generateToken } from '../middleware/auth.js';
+import { IUser } from '../models/User.js';
 import jwt from 'jsonwebtoken';
-import User from '../models/User';
+import User from '../models/User.js';
 
 const router = express.Router();
 

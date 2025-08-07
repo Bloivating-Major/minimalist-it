@@ -5,10 +5,10 @@ dotenv.config();
 import express from 'express';
 import cors from 'cors';
 import session from 'express-session';
-import { connectDB } from './config/database';
-import todoRoutes from './routes/todoRoutes';
-import authRoutes from './routes/authRoutes';
-import './config/passport'; // Initialize passport configuration
+import { connectDB } from './config/database.js';
+import todoRoutes from './routes/todoRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import './config/passport.js'; // Initialize passport configuration
 
 // Debug: Check if Google OAuth credentials are loaded
 console.log('Google Client ID loaded:', !!process.env.GOOGLE_CLIENT_ID);
