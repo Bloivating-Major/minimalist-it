@@ -58,10 +58,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       fetchUser(tokenFromUrl);
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
-      // Show success message for mobile users
-      if (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        toast.success('Successfully signed in on mobile!');
-      }
+      // Show success message
+      toast.success('Successfully signed in!');
     } else if (errorFromUrl) {
       toast.error('Authentication failed. Please try again.');
       setIsLoading(false);

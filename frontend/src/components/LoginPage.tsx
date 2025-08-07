@@ -18,16 +18,16 @@ export function LoginPage() {
               <CheckSquare className="h-8 w-8 text-background" />
             </div>
           </div>
-          <h1 className="text-3xl font-semibold text-foreground">Minimal List It</h1>
-          <p className="text-muted-foreground mt-2">Minimalist productivity</p>
+          <h1 className="text-3xl font-semibold text-foreground">Minimalist It</h1>
+          <p className="text-muted-foreground mt-2">Simple todo management</p>
         </div>
 
         {/* Login Card */}
         <Card className="border border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader className="text-center">
-            <CardTitle className="text-xl">Welcome Back</CardTitle>
+            <CardTitle className="text-xl">Welcome to Minimalist It</CardTitle>
             <CardDescription>
-              Sign in to access your todos and stay organized
+              Sign in with Google to access your todos from any device
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">

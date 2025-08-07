@@ -2,18 +2,14 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { TodoList } from "@/components/TodoList"
 import { LoginPage } from "@/components/LoginPage"
-import { MobileLoginGuide } from "@/components/MobileLoginGuide"
-import { MobileQRShare } from "@/components/MobileQRShare"
 import { AuthError } from "@/components/AuthError"
 import { UserProfile } from "@/components/UserProfile"
 import { AuthProvider, useAuth } from "@/contexts/AuthContext"
 import { Toaster } from "sonner"
-import { CheckSquare, Smartphone } from "lucide-react"
-import { useState } from "react"
+import { CheckSquare } from "lucide-react"
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
-  const [showMobileQR, setShowMobileQR] = useState(false);
 
   // Check if we're on the error page
   if (window.location.pathname === '/auth/error') {
@@ -35,13 +31,6 @@ function AppContent() {
   }
 
   if (!isAuthenticated) {
-    // Check if we're on mobile/network IP (not localhost)
-    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-    if (!isLocalhost) {
-      return <MobileLoginGuide />;
-    }
-
     return <LoginPage />;
   }
 
@@ -55,19 +44,12 @@ function AppContent() {
             </div>
             <div>
               <h1 className="text-2xl font-semibold text-foreground">
-                TodoMaster
+                Minimalist It
               </h1>
-              <p className="text-sm text-muted-foreground">Minimalist productivity</p>
+              <p className="text-sm text-muted-foreground">Simple todo management</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => setShowMobileQR(!showMobileQR)}
-              className="p-2 hover:bg-muted/50 rounded-lg transition-colors"
-              title="Share mobile access"
-            >
-              <Smartphone className="h-5 w-5" />
-            </button>
             <ThemeToggle />
             <UserProfile />
           </div>
@@ -76,13 +58,6 @@ function AppContent() {
 
       <main className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {showMobileQR && (
-            <div className="flex justify-center">
-              <div className="w-full max-w-md">
-                <MobileQRShare />
-              </div>
-            </div>
-          )}
           <TodoList />
         </div>
       </main>
