@@ -1,26 +1,24 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "Backend API for Full Stack Todo Application",
-  "main": "dist/index.js",
+  "description": "Backend API for Minimalist-It Todo Application",
+  "main": "src/index.js",
   "type": "module",
   "engines": {
     "node": ">=18.0.0",
     "npm": ">=8.0.0"
   },
   "scripts": {
-    "dev": "nodemon src/index.ts",
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "start:ts": "ts-node src/index.ts",
-    "start:prod": "cross-env NODE_ENV=production node dist/index.js"
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "todo",
     "api",
     "express",
     "mongodb",
-    "typescript"
+    "javascript"
   ],
   "author": "",
   "license": "MIT",
@@ -37,17 +35,6 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cors": "^2.8.19",
-    "@types/express": "^4.17.21",
-    "@types/express-session": "^1.17.7",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^20.10.6",
-    "@types/passport": "^1.0.17",
-    "@types/passport-google-oauth20": "^2.0.16",
-    "cross-env": "^10.0.0",
-    "nodemon": "^3.1.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "nodemon": "^3.1.0"
   }
 }

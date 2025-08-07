@@ -1,17 +1,6 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface ITodo extends Document {
-  title: string;
-  description?: string;
-  completed: boolean;
-  priority: 'low' | 'medium' | 'high';
-  dueDate?: Date;
-  userId: mongoose.Types.ObjectId;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const TodoSchema: Schema = new Schema(
+const TodoSchema = new mongoose.Schema(
   {
     title: {
       type: String,
@@ -36,7 +25,7 @@ const TodoSchema: Schema = new Schema(
     dueDate: {
       type: Date,
       validate: {
-        validator: function(value: Date) {
+        validator: function(value) {
           return !value || value > new Date();
         },
         message: 'Due date must be in the future'
@@ -51,7 +40,7 @@ const TodoSchema: Schema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function(doc: any, ret: any) {
+      transform: function(doc, ret) {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
@@ -61,9 +50,9 @@ const TodoSchema: Schema = new Schema(
   }
 );
 
-// Index for better query performance
+// Indexes for user-specific queries
 TodoSchema.index({ userId: 1, completed: 1, createdAt: -1 });
 TodoSchema.index({ userId: 1, priority: 1 });
 TodoSchema.index({ userId: 1 });
 
-export default mongoose.model<ITodo>('Todo', TodoSchema);
+export default mongoose.model('Todo', TodoSchema);

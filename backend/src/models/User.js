@@ -1,15 +1,6 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose from 'mongoose';
 
-export interface IUser extends Document {
-  googleId: string;
-  email: string;
-  name: string;
-  picture?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const UserSchema: Schema = new Schema(
+const UserSchema = new mongoose.Schema(
   {
     googleId: {
       type: String,
@@ -36,7 +27,7 @@ const UserSchema: Schema = new Schema(
   {
     timestamps: true,
     toJSON: {
-      transform: function(doc: any, ret: any) {
+      transform: function(doc, ret) {
         ret.id = ret._id;
         delete ret._id;
         delete ret.__v;
@@ -47,4 +38,4 @@ const UserSchema: Schema = new Schema(
   }
 );
 
-export default mongoose.model<IUser>('User', UserSchema);
+export default mongoose.model('User', UserSchema);
