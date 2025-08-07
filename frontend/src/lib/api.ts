@@ -5,7 +5,6 @@ import type { Todo, CreateTodoData, UpdateTodoData } from '../types/todo';
 const getApiBaseUrl = () => {
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
-    const protocol = window.location.protocol;
 
     // Development
     if (hostname === 'localhost' || hostname === '127.0.0.1') {

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare } from "lucide-react";
 import { GoogleIcon } from "@/components/ui/google-icon";
-import { FcGoogle } from "react-icons/fc";
+
 import { useAuth } from "../contexts/AuthContext";
 
 export function LoginPage() {

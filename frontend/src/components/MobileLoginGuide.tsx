@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckSquare, Smartphone, Monitor, ArrowRight, Wifi, Camera } from "lucide-react";
+import { CheckSquare, Smartphone, Monitor, Camera } from "lucide-react";
 import { GoogleIcon } from "@/components/ui/google-icon";
 import { SimpleQRScanner } from "./SimpleQRScanner";
 import { useAuth } from "../contexts/AuthContext";

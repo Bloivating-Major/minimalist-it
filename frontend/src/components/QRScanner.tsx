@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Html5Qrcode } from "html5-qrcode";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Camera, X, CheckCircle, AlertCircle, Flashlight, FlashlightOff } from "lucide-react";
+
+import { Camera, X, AlertCircle, Flashlight, FlashlightOff } from "lucide-react";
 import { toast } from "sonner";
 
 interface QRScannerProps {
@@ -12,12 +12,9 @@ interface QRScannerProps {
 
 export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
   const scannerRef = useRef<Html5Qrcode | null>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string>("");
   const [torchEnabled, setTorchEnabled] = useState(false);
-  const [cameras, setCameras] = useState<any[]>([]);
-  const [selectedCamera, setSelectedCamera] = useState<string>("");
   const [permissionState, setPermissionState] = useState<'requesting' | 'granted' | 'denied' | 'prompt'>('prompt');
   const [isInitializing, setIsInitializing] = useState(false);
 
@@ -71,7 +68,6 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
     try {
       // Get available cameras
       const devices = await Html5Qrcode.getCameras();
-      setCameras(devices);
 
       if (devices.length === 0) {
         setError("No cameras found on this device");
@@ -85,7 +81,6 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
         device.label.toLowerCase().includes('rear')
       );
       const cameraId = backCamera ? backCamera.id : devices[0].id;
-      setSelectedCamera(cameraId);
 
       // Initialize scanner
       const scanner = new Html5Qrcode("qr-scanner");
@@ -158,9 +153,9 @@ export function QRScanner({ onScanSuccess, onClose }: QRScannerProps) {
     if (scannerRef.current) {
       try {
         const capabilities = await scannerRef.current.getRunningTrackCapabilities();
-        if (capabilities.torch) {
+        if ((capabilities as any).torch) {
           await scannerRef.current.applyVideoConstraints({
-            advanced: [{ torch: !torchEnabled }]
+            advanced: [{ torch: !torchEnabled } as any]
           });
           setTorchEnabled(!torchEnabled);
         }
