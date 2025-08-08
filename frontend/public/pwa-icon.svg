@@ -1,0 +1,22 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="512" height="512" rx="64" fill="#000000"/>
+  
+  <!-- Main Icon - Minimalist Checkmark -->
+  <g transform="translate(128, 128)">
+    <!-- Outer circle -->
+    <circle cx="128" cy="128" r="120" stroke="#ffffff" stroke-width="16" fill="none"/>
+    
+    <!-- Checkmark -->
+    <path d="M80 128L112 160L176 96" stroke="#ffffff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    
+    <!-- Minimalist dots -->
+    <circle cx="64" cy="64" r="8" fill="#ffffff"/>
+    <circle cx="192" cy="64" r="8" fill="#ffffff"/>
+    <circle cx="64" cy="192" r="8" fill="#ffffff"/>
+    <circle cx="192" cy="192" r="8" fill="#ffffff"/>
+  </g>
+  
+  <!-- App name hint -->
+  <text x="256" y="480" text-anchor="middle" fill="#ffffff" font-family="system-ui" font-size="24" font-weight="300">Minimalist It</text>
+</svg>

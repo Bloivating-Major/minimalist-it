@@ -8,6 +8,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext"
 import { Toaster } from "sonner"
 import { CheckSquare } from "lucide-react"
 import { LoadingScreen } from "@/components/ui/loader"
+import { PWAInstall, PWAStatus } from "@/components/PWAInstall"
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -49,6 +50,7 @@ function AppContent() {
 
       <main className="container mx-auto px-6 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
+          <PWAInstall />
           <TodoList />
         </div>
       </main>
@@ -61,6 +63,7 @@ function App() {
     <ThemeProvider defaultTheme="system" storageKey="todo-ui-theme">
       <AuthProvider>
         <AppContent />
+        <PWAStatus />
         <Toaster
           position="top-right"
           toastOptions={{
