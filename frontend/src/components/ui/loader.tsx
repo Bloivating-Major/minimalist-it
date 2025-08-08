@@ -20,42 +20,36 @@ export function Loader({ className, size = "md", variant = "primary" }: LoaderPr
   };
 
   return (
-    <div className={cn("minimalist-loader", sizeClasses[size], variantClasses[variant], className)}>
-      <style jsx>{`
-        .minimalist-loader {
-          aspect-ratio: 1;
-          position: relative;
-          background:
-            conic-gradient(from 134deg at top, currentColor 92deg, transparent 0) top,
-            conic-gradient(from -46deg at bottom, currentColor 92deg, transparent 0) bottom;
-          background-size: 100% 50%;
-          background-repeat: no-repeat;
-        }
-        
-        .minimalist-loader:before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          --gradient: currentColor 14.5px, transparent 0 calc(100% - 14.5px), currentColor 0;
-          background:
-            linear-gradient(45deg, var(--gradient)),
-            linear-gradient(-45deg, var(--gradient));
-          animation: minimalist-spin 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
-        }
-        
+    <div
+      className={cn("minimalist-loader", sizeClasses[size], variantClasses[variant], className)}
+      style={{
+        aspectRatio: '1',
+        position: 'relative',
+        background: `
+          conic-gradient(from 134deg at top, currentColor 92deg, transparent 0) top,
+          conic-gradient(from -46deg at bottom, currentColor 92deg, transparent 0) bottom
+        `,
+        backgroundSize: '100% 50%',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      <div
+        style={{
+          content: '""',
+          position: 'absolute',
+          inset: '0',
+          background: `
+            linear-gradient(45deg, currentColor 14.5px, transparent 0 calc(100% - 14.5px), currentColor 0),
+            linear-gradient(-45deg, currentColor 14.5px, transparent 0 calc(100% - 14.5px), currentColor 0)
+          `,
+          animation: 'minimalist-spin 1.5s infinite cubic-bezier(0.3, 1, 0, 1)'
+        }}
+      />
+      <style>{`
         @keyframes minimalist-spin {
-          33% {
-            inset: -10px;
-            transform: rotate(0deg);
-          }
-          66% {
-            inset: -10px;
-            transform: rotate(90deg);
-          }
-          100% {
-            inset: 0;
-            transform: rotate(90deg);
-          }
+          33% { inset: -10px; transform: rotate(0deg); }
+          66% { inset: -10px; transform: rotate(90deg); }
+          100% { inset: 0; transform: rotate(90deg); }
         }
       `}</style>
     </div>

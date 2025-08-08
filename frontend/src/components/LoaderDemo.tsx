@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CSSLoader, SpinLoader, PulseLoader, DotsLoader } from "@/components/ui/css-loader";
-import { Loader, LoadingScreen, InlineLoader } from "@/components/ui/loader";
+import { LoadingScreen, InlineLoader } from "@/components/ui/loader";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
