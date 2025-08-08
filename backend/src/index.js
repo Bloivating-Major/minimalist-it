@@ -1,6 +1,10 @@
 import dotenv from 'dotenv';
 
 // Load environment variables FIRST
+// Load environment-specific config
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+dotenv.config({ path: envFile });
+// Also load base .env as fallback
 dotenv.config();
 
 import express from 'express';

@@ -12,13 +12,19 @@ export function PWAInstall() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [isInstalled, setIsInstalled] = useState(false);
-  const [showManualPrompt] = useState(true); // Always show for testing
+  const [showManualPrompt, setShowManualPrompt] = useState(true); // Always show for testing
 
   useEffect(() => {
     // Check if app is already installed
     const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
     const isInWebAppiOS = (window.navigator as any).standalone === true;
     setIsInstalled(isStandalone || isInWebAppiOS);
+
+    // Check if user previously dismissed the install prompt
+    const wasDismissed = localStorage.getItem('pwa-install-dismissed') === 'true';
+    if (wasDismissed) {
+      setShowManualPrompt(false);
+    }
 
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
@@ -75,6 +81,9 @@ The app will appear on your device like a native app!`);
 
   const handleDismiss = () => {
     setShowInstallPrompt(false);
+    setShowManualPrompt(false);
+    // Store dismissal in localStorage to remember user preference
+    localStorage.setItem('pwa-install-dismissed', 'true');
   };
 
   // Don't show if already installed
@@ -82,7 +91,7 @@ The app will appear on your device like a native app!`);
     return null;
   }
 
-  // Show manual prompt if no native prompt available
+  // Don't show if user dismissed it or no prompts available
   if (!showInstallPrompt && !showManualPrompt) {
     return null;
   }
