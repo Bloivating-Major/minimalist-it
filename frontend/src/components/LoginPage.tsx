@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckSquare } from "lucide-react";
 import { GoogleIcon } from "@/components/ui/google-icon";
+import { CSSLoader } from "@/components/ui/css-loader";
 
 import { useAuth } from "../contexts/AuthContext";
 
@@ -38,7 +39,7 @@ export function LoginPage() {
               size="lg"
             >
               {isLoading ? (
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-gray-400 border-t-transparent mr-3" />
+                <CSSLoader size="sm" className="mr-3" />
               ) : (
                 <GoogleIcon className="mr-3 transition-transform duration-200" size={20} />
               )}

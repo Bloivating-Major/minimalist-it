@@ -38,31 +38,4 @@ function getDefaultApiUrl(): string {
   return `${protocol}//${hostname}:5000/api`;
 }
 
-// Validation function
-export function validateConfig() {
-  const requiredEnvVars = [
-    'VITE_API_BASE_URL',
-  ];
 
-  const missing = requiredEnvVars.filter(
-    (varName) => !import.meta.env[varName]
-  );
-
-  if (missing.length > 0 && config.isProduction) {
-    console.warn('⚠️ Missing environment variables:', missing);
-  }
-
-  // Log configuration in development
-  if (config.isDevelopment) {
-    console.log('🔧 App Configuration:', {
-      apiBaseUrl: config.apiBaseUrl,
-      appName: config.appName,
-      appVersion: config.appVersion,
-      mode: config.mode,
-      environment: config.isProduction ? 'production' : 'development',
-    });
-  }
-}
-
-// Auto-validate on import
-validateConfig();

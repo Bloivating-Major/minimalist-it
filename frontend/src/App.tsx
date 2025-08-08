@@ -7,6 +7,7 @@ import { UserProfile } from "@/components/UserProfile"
 import { AuthProvider, useAuth } from "@/contexts/AuthContext"
 import { Toaster } from "sonner"
 import { CheckSquare } from "lucide-react"
+import { LoadingScreen } from "@/components/ui/loader"
 
 function AppContent() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -17,17 +18,7 @@ function AppContent() {
   }
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <div className="p-3 bg-foreground rounded-lg">
-            <CheckSquare className="h-8 w-8 text-background" />
-          </div>
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-foreground border-t-transparent"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen message="Loading your todos..." />;
   }
 
   if (!isAuthenticated) {

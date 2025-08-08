@@ -199,13 +199,14 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
           </div>
 
           {!isEditing && (
-            <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="flex gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-200">
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={() => setIsEditing(true)}
                 disabled={isLoading}
-                className="h-8 w-8 p-0 hover:bg-muted/50"
+                className="h-9 w-9 md:h-8 md:w-8 p-0 hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors border border-transparent hover:border-border/50 rounded-md"
+                title="Edit todo"
               >
                 <Edit3 className="h-4 w-4" />
               </Button>
@@ -214,7 +215,8 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
                 variant="ghost"
                 onClick={handleDelete}
                 disabled={isLoading}
-                className="h-8 w-8 p-0 text-red-600 dark:text-red-400 hover:bg-muted/50"
+                className="h-9 w-9 md:h-8 md:w-8 p-0 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800 rounded-md"
+                title="Delete todo"
               >
                 {isLoading ? (
                   <div className="h-3 w-3 animate-spin rounded-full border-2 border-red-500 border-t-transparent" />
