@@ -43,6 +43,10 @@ export function TodoList() {
   const completedCount = todos.filter(todo => todo.completed).length
   const activeCount = todos.filter(todo => !todo.completed).length
   const completionRate = todos.length > 0 ? Math.round((completedCount / todos.length) * 100) : 0
+  const priorityOrder = {high: 0, medium: 1, low: 2};
+  const sortedTodos = [...filteredTodos].sort((a,b) => {
+    return (priorityOrder[a.priority] ?? 99) - (priorityOrder[b.priority] ?? 99);
+  });
 
   if (isLoading) {
     return (
@@ -147,7 +151,7 @@ export function TodoList() {
 
       {/* Todo List */}
       <div className="space-y-3">
-        {filteredTodos.length === 0 ? (
+        {sortedTodos.length === 0 ? (
           <Card className="border-dashed border-2 border-border/50">
             <CardContent className="p-12">
               <div className="text-center">
