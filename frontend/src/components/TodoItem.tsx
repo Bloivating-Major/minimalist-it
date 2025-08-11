@@ -123,7 +123,7 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
       className={cn(
         "transition-all duration-200 hover:shadow-sm border border-border/50 bg-card/50",
         todo.completed && "opacity-60",
-        isDragging && "opacity-50 shadow-lg z-50"
+        isDragging && "opacity-50 shadow-lg z-50 scale-105 rotate-2"
       )}
     >
       <CardContent className="p-4">
@@ -132,9 +132,10 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
           <div
             {...attributes}
             {...listeners}
-            className="flex items-center justify-center w-6 h-6 mt-1 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
+            className="flex items-center justify-center w-8 h-8 mt-1 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors touch-none select-none"
+            style={{ touchAction: 'none' }}
           >
-            <GripVertical className="h-4 w-4" />
+            <GripVertical className="h-5 w-5" />
           </div>
           <Checkbox
             checked={todo.completed}

@@ -12,6 +12,7 @@ import {
   closestCenter,
   KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   type DragEndEvent,
@@ -30,7 +31,17 @@ export function TodoList() {
   const [sortMode, setSortMode] = useState<'priority' | 'custom'>('priority')
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8, // 8px movement required before drag starts
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 200, // 200ms delay before drag starts on touch
+        tolerance: 8, // 8px tolerance for touch movement
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -194,7 +205,7 @@ export function TodoList() {
       )}
 
       {/* Sort Mode Toggle */}
-      <div className="flex items-center justify-center mb-4">
+      <div className="flex flex-col items-center justify-center mb-4 space-y-3">
         <div className="flex gap-2 p-1 bg-muted/50 rounded-lg">
           <Button
             variant={sortMode === 'priority' ? 'default' : 'ghost'}
@@ -215,6 +226,13 @@ export function TodoList() {
             Custom Order
           </Button>
         </div>
+
+        {sortMode === 'custom' && (
+          <div className="text-xs text-muted-foreground text-center">
+            <span className="hidden md:inline">💡 Drag todos by the ⋮⋮ handle to reorder</span>
+            <span className="md:hidden">💡 Touch and hold the ⋮⋮ handle to drag todos</span>
+          </div>
+        )}
       </div>
 
       {/* Filter Buttons */}
