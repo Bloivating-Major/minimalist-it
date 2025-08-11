@@ -137,14 +137,43 @@ export const deleteTodo = async (req, res) => {
   try {
     const { id } = req.params;
     const todo = await Todo.findOneAndDelete({ _id: id, userId: req.user._id });
-    
+
     if (!todo) {
       return res.status(404).json({ error: 'Todo not found' });
     }
-    
+
     res.json({ message: 'Todo deleted successfully' });
   } catch (error) {
     console.error('Error deleting todo:', error);
     res.status(500).json({ error: 'Failed to delete todo' });
+  }
+};
+
+// Reorder todos
+export const reorderTodos = async (req, res) => {
+  try {
+    const { todoIds } = req.body;
+
+    if (!Array.isArray(todoIds)) {
+      return res.status(400).json({ error: 'todoIds must be an array' });
+    }
+
+    // Update order for each todo
+    const updatePromises = todoIds.map((todoId, index) =>
+      Todo.findOneAndUpdate(
+        { _id: todoId, userId: req.user._id },
+        { order: index },
+        { new: true }
+      )
+    );
+
+    await Promise.all(updatePromises);
+
+    // Return updated todos in new order
+    const updatedTodos = await Todo.find({ userId: req.user._id }).sort({ order: 1 });
+    res.json(updatedTodos);
+  } catch (error) {
+    console.error('Error reordering todos:', error);
+    res.status(500).json({ error: 'Failed to reorder todos' });
   }
 };

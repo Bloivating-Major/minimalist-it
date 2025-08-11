@@ -3,22 +3,43 @@ import { TodoItem } from "./TodoItem"
 import { AddTodo } from "./AddTodo"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, Circle, ListTodo, TrendingUp } from "lucide-react"
+import { CheckCircle, Circle, ListTodo, TrendingUp, RotateCcw } from "lucide-react"
 import { toast } from "sonner"
 import { todoApi } from "@/lib/api"
 import type { Todo } from "../types/todo"
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 
 export function TodoList() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all')
+  const [sortMode, setSortMode] = useState<'priority' | 'custom'>('priority')
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  )
 
   const fetchTodos = async () => {
     try {
-      const fetchedTodos = await todoApi.getTodos({
-        sortBy: 'createdAt',
-        order: 'desc'
-      })
+      // Fetch all todos without backend sorting since we sort on frontend
+      const fetchedTodos = await todoApi.getTodos()
       setTodos(fetchedTodos)
     } catch (error) {
       console.error("Failed to fetch todos:", error)
@@ -32,6 +53,42 @@ export function TodoList() {
     fetchTodos()
   }, [])
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+
+    if (!over || active.id === over.id) {
+      return
+    }
+
+    const oldIndex = sortedTodos.findIndex(todo => todo.id === active.id)
+    const newIndex = sortedTodos.findIndex(todo => todo.id === over.id)
+
+    if (oldIndex === -1 || newIndex === -1) {
+      return
+    }
+
+    // Optimistically update the UI
+    const newTodos = arrayMove(sortedTodos, oldIndex, newIndex)
+    const reorderedIds = newTodos.map(todo => todo.id)
+
+    // Switch to custom sort mode when user drags
+    setSortMode('custom')
+
+    try {
+      // Update backend with new order
+      const updatedTodos = await todoApi.reorderTodos(reorderedIds)
+      setTodos(updatedTodos)
+      toast.success("Todo order updated!")
+    } catch (error) {
+      console.error("Failed to reorder todos:", error)
+      toast.error("Failed to update todo order")
+      // Revert on error
+      fetchTodos()
+    }
+  }
+
+
+
   const filteredTodos = todos.filter(todo => {
     switch (filter) {
       case 'active': return !todo.completed
@@ -43,9 +100,29 @@ export function TodoList() {
   const completedCount = todos.filter(todo => todo.completed).length
   const activeCount = todos.filter(todo => !todo.completed).length
   const completionRate = todos.length > 0 ? Math.round((completedCount / todos.length) * 100) : 0
-  const priorityOrder = {high: 0, medium: 1, low: 2};
-  const sortedTodos = [...filteredTodos].sort((a,b) => {
-    return (priorityOrder[a.priority] ?? 99) - (priorityOrder[b.priority] ?? 99);
+
+  // Sorting logic based on mode
+  const sortedTodos = [...filteredTodos].sort((a, b) => {
+    if (sortMode === 'custom') {
+      // Custom order mode - sort by order field
+      return (a.order || 0) - (b.order || 0);
+    } else {
+      // Priority mode - original priority-based sorting
+      // First sort by completion status (incomplete todos first)
+      if (a.completed !== b.completed) {
+        return a.completed ? 1 : -1;
+      }
+
+      // Then sort by priority (high -> medium -> low)
+      const priorityOrder: Record<string, number> = { high: 0, medium: 1, low: 2 };
+      const priorityDiff = (priorityOrder[a.priority] ?? 99) - (priorityOrder[b.priority] ?? 99);
+      if (priorityDiff !== 0) {
+        return priorityDiff;
+      }
+
+      // Finally sort by creation date (newest first)
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
   });
 
   if (isLoading) {
@@ -116,6 +193,30 @@ export function TodoList() {
         </div>
       )}
 
+      {/* Sort Mode Toggle */}
+      <div className="flex items-center justify-center mb-4">
+        <div className="flex gap-2 p-1 bg-muted/50 rounded-lg">
+          <Button
+            variant={sortMode === 'priority' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setSortMode('priority')}
+            className={sortMode === 'priority' ? 'bg-background shadow-sm' : 'hover:bg-background/50'}
+          >
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Priority Sort
+          </Button>
+          <Button
+            variant={sortMode === 'custom' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => setSortMode('custom')}
+            className={sortMode === 'custom' ? 'bg-background shadow-sm' : 'hover:bg-background/50'}
+          >
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Custom Order
+          </Button>
+        </div>
+      </div>
+
       {/* Filter Buttons */}
       <div className="flex items-center justify-center">
         <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
@@ -174,17 +275,24 @@ export function TodoList() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-3">
-            {filteredTodos.map(todo => (
-              <div key={todo.id} className="group">
-                <TodoItem
-                  todo={todo}
-                  onTodoUpdated={fetchTodos}
-                  onTodoDeleted={fetchTodos}
-                />
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext items={sortedTodos.map(todo => todo.id)} strategy={verticalListSortingStrategy}>
+              <div className="space-y-3">
+                {sortedTodos.map(todo => (
+                  <TodoItem
+                    key={todo.id}
+                    todo={todo}
+                    onTodoUpdated={fetchTodos}
+                    onTodoDeleted={fetchTodos}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
+            </SortableContext>
+          </DndContext>
         )}
       </div>
     </div>

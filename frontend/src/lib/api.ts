@@ -73,6 +73,12 @@ export const todoApi = {
   deleteTodo: async (id: string): Promise<void> => {
     await api.delete(`/todos/${id}`);
   },
+
+  // Reorder todos
+  reorderTodos: async (todoIds: string[]): Promise<Todo[]> => {
+    const response = await api.patch('/todos/reorder', { todoIds });
+    return response.data;
+  },
 };
 
 export default api;

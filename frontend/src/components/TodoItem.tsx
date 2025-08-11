@@ -1,14 +1,17 @@
 import { useState } from "react"
-import { Trash2, Edit3, Check, X, AlertCircle, Circle, Zap, Calendar } from "lucide-react"
+import { Trash2, Edit3, Check, X, AlertCircle, Circle, Zap, Calendar, GripVertical } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { todoApi } from "@/lib/api"
 import type { Todo } from "../types/todo"
 import { cn } from "@/lib/utils"
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 interface TodoItemProps {
   todo: Todo
@@ -28,6 +31,15 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
   const [editDescription, setEditDescription] = useState(todo.description || "")
   const [editPriority, setEditPriority] = useState<"low" | "medium" | "high">(todo.priority)
   const [isLoading, setIsLoading] = useState(false)
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: todo.id })
 
   const handleToggleComplete = async () => {
     setIsLoading(true)
@@ -74,6 +86,14 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
     setIsEditing(false)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      handleCancelEdit()
+    } else if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      handleSaveEdit()
+    }
+  }
+
   const handleDelete = async () => {
     setIsLoading(true)
     try {
@@ -91,13 +111,31 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
   const currentPriority = priorityOptions.find(p => p.value === todo.priority) || priorityOptions[1]
   const PriorityIcon = currentPriority.icon
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
   return (
-    <Card className={cn(
-      "transition-all duration-200 hover:shadow-sm border border-border/50 bg-card/50",
-      todo.completed && "opacity-60"
-    )}>
+    <Card
+      ref={setNodeRef}
+      style={style}
+      className={cn(
+        "transition-all duration-200 hover:shadow-sm border border-border/50 bg-card/50",
+        todo.completed && "opacity-60",
+        isDragging && "opacity-50 shadow-lg z-50"
+      )}
+    >
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
+          {/* Drag Handle */}
+          <div
+            {...attributes}
+            {...listeners}
+            className="flex items-center justify-center w-6 h-6 mt-1 cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <GripVertical className="h-4 w-4" />
+          </div>
           <Checkbox
             checked={todo.completed}
             onCheckedChange={handleToggleComplete}
@@ -107,18 +145,20 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
 
           <div className="flex-1 min-w-0">
             {isEditing ? (
-              <div className="space-y-3">
+              <div className="space-y-3" onKeyDown={handleKeyDown}>
                 <Input
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
                   className="font-medium border-border/50 focus:border-foreground/20 bg-background/50"
                   placeholder="Todo title"
+                  autoFocus
                 />
-                <Input
+                <Textarea
                   value={editDescription}
                   onChange={(e) => setEditDescription(e.target.value)}
                   placeholder="Description (optional)"
-                  className="border-border/50 focus:border-foreground/20 bg-background/50"
+                  className="border-border/50 focus:border-foreground/20 bg-background/50 min-h-[80px] resize-none"
+                  rows={3}
                 />
                 <Select value={editPriority} onValueChange={(value: "low" | "medium" | "high") => setEditPriority(value)}>
                   <SelectTrigger className="border-border/50 focus:border-foreground/20 bg-background/50">
@@ -138,42 +178,63 @@ export function TodoItem({ todo, onTodoUpdated, onTodoDeleted }: TodoItemProps) 
                     })}
                   </SelectContent>
                 </Select>
-                <div className="flex gap-2">
+                <div className="flex gap-2 pt-2">
                   <Button
                     size="sm"
                     onClick={handleSaveEdit}
-                    disabled={isLoading}
-                    className="bg-foreground text-background hover:bg-foreground/90"
+                    disabled={isLoading || !editTitle.trim()}
+                    className="bg-green-600 text-white hover:bg-green-700 disabled:opacity-50"
                   >
                     {isLoading ? (
-                      <div className="h-3 w-3 animate-spin rounded-full border-2 border-background border-t-transparent" />
+                      <div className="h-3 w-3 animate-spin rounded-full border-2 border-white border-t-transparent" />
                     ) : (
                       <Check className="h-4 w-4" />
                     )}
                     <span className="ml-1">Save</span>
                   </Button>
-                  <Button size="sm" variant="outline" onClick={handleCancelEdit} className="border-border/50">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleCancelEdit}
+                    disabled={isLoading}
+                    className="border-border/50 hover:bg-muted/50"
+                  >
                     <X className="h-4 w-4" />
                     <span className="ml-1">Cancel</span>
                   </Button>
+                </div>
+                <div className="text-xs text-muted-foreground mt-2">
+                  <span>💡 Press </span>
+                  <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Ctrl+Enter</kbd>
+                  <span> to save, </span>
+                  <kbd className="px-1 py-0.5 bg-muted rounded text-xs">Esc</kbd>
+                  <span> to cancel</span>
                 </div>
               </div>
             ) : (
               <div>
                 <div className="flex items-start justify-between">
-                  <h3 className={cn(
-                    "font-semibold text-lg",
-                    todo.completed && "line-through text-muted-foreground"
-                  )}>
+                  <h3
+                    className={cn(
+                      "font-semibold text-lg cursor-pointer hover:text-foreground/80 transition-colors",
+                      todo.completed && "line-through text-muted-foreground"
+                    )}
+                    onDoubleClick={() => !isLoading && setIsEditing(true)}
+                    title="Double-click to edit"
+                  >
                     {todo.title}
                   </h3>
                 </div>
 
                 {todo.description && (
-                  <p className={cn(
-                    "text-sm text-muted-foreground mt-2 leading-relaxed",
-                    todo.completed && "line-through"
-                  )}>
+                  <p
+                    className={cn(
+                      "text-sm text-muted-foreground mt-2 leading-relaxed cursor-pointer hover:text-muted-foreground/80 transition-colors",
+                      todo.completed && "line-through"
+                    )}
+                    onDoubleClick={() => !isLoading && setIsEditing(true)}
+                    title="Double-click to edit"
+                  >
                     {todo.description}
                   </p>
                 )}

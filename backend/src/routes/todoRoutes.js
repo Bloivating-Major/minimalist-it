@@ -5,7 +5,8 @@ import {
   createTodo,
   updateTodo,
   toggleTodo,
-  deleteTodo
+  deleteTodo,
+  reorderTodos
 } from '../controllers/todoController.js';
 import { requireAuth } from '../middleware/auth.js';
 
@@ -20,6 +21,7 @@ router.get('/:id', getTodoById);
 router.post('/', createTodo);
 router.put('/:id', updateTodo);
 router.patch('/:id/toggle', toggleTodo);
+router.patch('/reorder', reorderTodos);
 router.delete('/:id', deleteTodo);
 
 export default router;
